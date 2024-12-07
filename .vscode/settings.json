@@ -1,0 +1,11 @@
+{
+    "python.languageServer": "Default",
+    "python.analysis.ignore": [
+        "*"
+    ],
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "ruff.enable": true,
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    }
+}
