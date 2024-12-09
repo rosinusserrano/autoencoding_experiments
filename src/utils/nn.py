@@ -1,9 +1,11 @@
 """Utility functions and classes for neural network design."""
 
 from collections.abc import Callable
+from typing import Literal
 
 import torch
 from torch import nn
+import torch.nn.functional as F
 
 
 class PrintModule(nn.Module):
@@ -122,3 +124,28 @@ def get_activation_by_name(name: str) -> nn.Module | Callable:
 
     msg = f"The activation '{name}' isn't defined"
     raise ValueError(msg)
+
+
+LossFnName = Literal[
+    "mse",
+    "cross_entropy",
+    "binary_cross_entropy",
+    "binary_cross_entropy_with_logits",
+]
+
+
+def get_loss_fn_by_name(
+    name: LossFnName,
+) -> Callable:
+    """Return a function specified by the name string."""
+    if name == "mse":
+        return F.mse_loss
+    if name == "cross_entropy":
+        return F.cross_entropy
+    if name == "binary_cross_entropy":
+        return F.binary_cross_entropy
+    if name == "binary_cross_entropy_with_logits":
+        return F.binary_cross_entropy_with_logits
+
+    msg = f"Activation with name {name} isn't supported yet sorry :)"
+    raise NotImplementedError(msg)
