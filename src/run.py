@@ -49,7 +49,7 @@ def run(config: RunConfig) -> None:
     optimizer = (
         AdamW(model.parameters(), lr=config.learning_rate)
         if config.use_weight_decay
-        else Adam(model.parameters, lr=config.learning_rate)
+        else Adam(model.parameters(), lr=config.learning_rate)
     )
 
     # Training loop
