@@ -1,9 +1,10 @@
-"Autoencoder implementation"
+"""Autoencoder implementation."""
 
 from dataclasses import dataclass, field
 from itertools import pairwise
 
 import torch
+from argparse_dataclass import ArgumentParser
 from torch import nn
 
 from utils.nn import ResidualBlock, downsample_conv, upsample_conv
@@ -60,7 +61,8 @@ class Autoencoder(nn.Module):
 
         self.decoder = nn.Sequential(
             ResidualBlock(
-                config.latent_channels, config.decoder_residual_channels[0]
+                config.latent_channels,
+                config.decoder_residual_channels[0],
             ),
             *[
                 ResidualBlock(inc, outc)
