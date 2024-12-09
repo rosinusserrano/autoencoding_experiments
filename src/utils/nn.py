@@ -39,9 +39,9 @@ class ResidualBlock(nn.Module):
 
         self.use_skip_conv = in_channels != out_channels
         self.skip_conv = (
-            None
+            nn.Conv2d(in_channels, out_channels, kernel_size=1)
             if self.use_skip_conv
-            else nn.Conv2d(in_channels, out_channels, kernel_size=1)
+            else None
         )
 
     def forward(self, tensor: torch.Tensor) -> torch.Tensor:
