@@ -23,6 +23,7 @@ class RunConfig:
     learning_rate: float
     epochs: int
     loss_fn: LossFnName
+    validation_split: float = 0.2
     use_weight_decay: bool = False
     reconstruct: bool = False
     validation_interval: int = 1
@@ -54,6 +55,8 @@ def run(config: RunConfig) -> None:
 
     # Training loop
     for epoch in range(config.epochs):
+        print(f"Epoch {epoch+1}")
+
         # Train model for one epoch
         train_loss = train_one_epoch(
             model=model,
@@ -62,6 +65,8 @@ def run(config: RunConfig) -> None:
             loss_fn=get_loss_fn_by_name(config.loss_fn),
             reconstruct=config.reconstruct,
         )
+
+        print(f" Train loss {train_loss:.4f}")
 
         # Evaluate model on validation set in specified intervals
         if epoch % config.validation_interval == 0:
@@ -72,8 +77,6 @@ def run(config: RunConfig) -> None:
                 reconstruct=config.reconstruct,
             )
 
-            print(f"Epoch {epoch}")
-            print(f" Train loss {train_loss:.4f}")
             print(f" Val loss {val_loss:.4f}")
 
         # Call side functions in specified intervals
