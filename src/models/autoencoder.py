@@ -118,6 +118,10 @@ def run(  # noqa: PLR0913
         },
     )
 
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model.to(device)
+    print(f"On device: {device}")
+
     for epoch in range(train_config.n_epochs):
         train_loss = train_one_epoch(
             model,
