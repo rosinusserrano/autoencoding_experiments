@@ -155,7 +155,7 @@ def run(  # noqa: PLR0913
             and epoch % visualization_interval == 0
         ):
             images, _ = next(iter(val_loader))
-            images = images[:8]
+            images = images[:8].to(device)
             reconstructions = model.reconstruct(images)
 
             side_by_side = show_side_by_side(images, reconstructions)

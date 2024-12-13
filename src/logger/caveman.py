@@ -72,6 +72,8 @@ class CavemanLogger(Logger):
         else:
             self.metrics[metric_name].append(metric_value)
             self.metrics[f"{metric_name}_epochs"].append(epoch)
+        
+        print(f"EPOCH {epoch}: {metric_name} {metric_value:.4f}")
 
     def log_grouped_metric(
         self,
