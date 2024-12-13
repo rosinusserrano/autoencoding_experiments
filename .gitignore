@@ -1,4 +1,5 @@
 uv.lock
 .venv
 *.pyc
-data/*
+data
+testrun

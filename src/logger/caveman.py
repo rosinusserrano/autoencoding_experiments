@@ -41,7 +41,7 @@ class CavemanLogger(Logger):
         for name, config in configs.items():
             if isinstance(config, dict):
                 with Path.open(
-                    f"{name}.yaml",
+                    f"{self.config_dir}/{name}.yaml",
                     "w",
                     encoding="utf-8",
                 ) as yaml_file:
@@ -49,7 +49,7 @@ class CavemanLogger(Logger):
 
             elif is_dataclass(config):
                 with Path.open(
-                    f"{name}.yaml",
+                    f"{self.config_dir}/{name}.yaml",
                     "w",
                     encoding="utf-8",
                 ) as yaml_file:
@@ -119,7 +119,7 @@ class CavemanLogger(Logger):
             filename = f"{filename}_{index}"
 
         plt.imsave(
-            f"{self.root_dir}/{filename}.png",
+            f"{self.image_dir}/{filename}.png",
             final_image.detach().cpu().numpy(),
         )
 
@@ -134,4 +134,4 @@ class CavemanLogger(Logger):
             plt.clf()
             plt.plot(epochs, values)
             plt.title(metric_name)
-            plt.savefig(f"{self.root_dir}/plots/")
+            plt.savefig({self.plots_dir})
