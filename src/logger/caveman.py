@@ -49,7 +49,7 @@ class CavemanLogger(Logger):
 
             elif is_dataclass(config):
                 with Path.open(
-                    f"{self.config_dir}/{name}.yaml",
+                    Path(f"{self.config_dir}/{name}.yaml"),
                     "w",
                     encoding="utf-8",
                 ) as yaml_file:
