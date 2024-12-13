@@ -6,6 +6,8 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
 
 class EvalMode:
     """Put a model in eval mode and activate no grad context."""
@@ -40,6 +42,7 @@ def evaluate(
 
     with EvalMode(model):
         for batch, labels in test_loader:
+            batch, labels = batch.to(DEVICE), labels.to(DEVICE)  # noqa: PLW2901
             if reconstruct:
                 labels = batch  # noqa: PLW2901
 

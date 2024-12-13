@@ -9,6 +9,8 @@ from torch import nn
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
 
 @dataclass
 class TrainConfig:
@@ -45,6 +47,7 @@ def train_one_epoch(
     losses = []
 
     for batch, labels in train_loader:
+        batch, labels = batch.to(DEVICE), labels.to(DEVICE)  # noqa: PLW2901
         if reconstruct:
             labels = batch  # noqa: PLW2901
 
