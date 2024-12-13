@@ -1,11 +1,36 @@
-"""Functions and classes to train models."""
+"""Util functions for training."""
 
 from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Literal
 
 import torch
 from torch import nn
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
+
+
+@dataclass
+class TrainConfig:
+    """Configuration for a autoencoder training pipeline."""
+
+    optimizer: Literal["adam", "sgd"]
+    learning_rate: float
+    n_epochs: int
+
+
+def create_optimizer(
+    train_config: TrainConfig,
+    model: nn.Module,
+) -> Optimizer:
+    """Create a optimizer with given config for given model."""
+    if train_config.optimizer == "adam":
+        return torch.optim.Adam(
+            model.parameters(),
+            lr=train_config.learning_rate,
+        )
+
+    raise NotImplementedError
 
 
 def train_one_epoch(
