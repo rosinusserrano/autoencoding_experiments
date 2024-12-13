@@ -72,7 +72,7 @@ class CavemanLogger(Logger):
         else:
             self.metrics[metric_name].append(metric_value)
             self.metrics[f"{metric_name}_epochs"].append(epoch)
-        
+
         print(f"EPOCH {epoch}: {metric_name} {metric_value:.4f}")
 
     def log_grouped_metric(
@@ -116,7 +116,7 @@ class CavemanLogger(Logger):
 
         if method == "append":
             index = len(
-                filter(lambda f: title in f, os.listdir(self.root_dir)),
+                list(filter(lambda f: title in f, os.listdir(self.root_dir))),
             )
             filename = f"{filename}_{index}"
 
