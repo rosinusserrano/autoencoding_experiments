@@ -41,7 +41,7 @@ class CavemanLogger(Logger):
         for name, config in configs.items():
             if isinstance(config, dict):
                 with Path.open(
-                    f"{self.config_dir}/{name}.yaml",
+                    Path(f"{self.config_dir}/{name}.yaml"),
                     "w",
                     encoding="utf-8",
                 ) as yaml_file:
