@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 from typing import Literal
 
 import torch
+from torch import nn
+from torch.optim import Optimizer
 
 
 class Logger(ABC):
@@ -27,20 +29,6 @@ class Logger(ABC):
         """Log a metric for a given epoch, which has a name and a value."""
         raise NotImplementedError
 
-    def log_metric(
-        self,
-        metric_name: str,
-        metric_value: float,
-        epoch: int,
-    ) -> None:
-        """Print metric to stdout and save to metrics dict for final plot."""
-        if metric_name not in self.metrics:
-            self.metrics[metric_name] = [metric_value]
-            self.metrics[f"{metric_name}_epochs"] = [epoch]
-        else:
-            self.metrics[metric_name].append(metric_value)
-            self.metrics[f"{metric_name}_epochs"].append(epoch)
-
     def log_grouped_metric(
         self,
         metric_name: str,
@@ -59,6 +47,15 @@ class Logger(ABC):
         method: Literal["append", "update"] = "append",
     ) -> None:
         """Log images."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def save(
+        self,
+        model: nn.Module | None = None,
+        optimizer: Optimizer | None = None,
+    ) -> None:
+        """Save model or optimizer, or both."""
         raise NotImplementedError
 
     @abstractmethod
