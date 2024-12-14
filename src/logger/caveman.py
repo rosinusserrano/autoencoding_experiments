@@ -145,7 +145,10 @@ class CavemanLogger(Logger):
             plt.clf()
             plt.plot(epochs, values)
             plt.title(metric_name)
-            plt.savefig({self.plots_dir})
+            plt.savefig(f"{self.plots_dir}/{metric_name}")
+        
+        if len(self.grouped_metrics.items()) > 0:
+            print("Grouped metrics not yet supported sorry.")
 
     def save(
         self,
