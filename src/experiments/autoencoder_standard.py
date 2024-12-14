@@ -5,13 +5,14 @@ from torch.nn import functional as F  # noqa: N812
 
 from datasets import DatasetConfig, load_data
 from logger.base import Logger
+from logger.caveman import CavemanLogger
 from models.autoencoder import Autoencoder, AutoencoderConfig
 from utils.evaluate import evaluate
 from utils.train import TrainConfig, create_optimizer, train_one_epoch
 from utils.visuals import show_side_by_side
 
 
-def run(  # noqa: PLR0913
+def train_standard_autoencoder(  # noqa: PLR0913
     model_config: AutoencoderConfig,
     dataset_config: DatasetConfig,
     train_config: TrainConfig,
@@ -84,3 +85,35 @@ def run(  # noqa: PLR0913
     logger.save(model, optimizer)
 
     return model
+
+
+def run(logging_dir: str):
+    """Run experiment: standard autoencoder reconstruction."""
+    for bs in [32, 64, 128]:
+        for lr in [0.1, 0.001, 0.0001]:
+            for epochs in [3, 5, 10]:
+                model_config = AutoencoderConfig()
+
+                dataset_config = DatasetConfig(
+                    dataset_name="cifar10",
+                    batch_size=bs,
+                    validation_split=0.1,
+                )
+
+                train_config = TrainConfig(
+                    optimizer="adam",
+                    learning_rate=lr,
+                    n_epochs=epochs,
+                )
+
+                cmlogger = CavemanLogger(root_dir=logging_dir)
+
+                train_standard_autoencoder(
+                    model_config=model_config,
+                    dataset_config=dataset_config,
+                    train_config=train_config,
+                    logger=cmlogger,
+                    validation_interval=1,
+                    test_interval=1,
+                    visualization_interval=1,
+                )
