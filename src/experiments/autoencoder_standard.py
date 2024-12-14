@@ -87,33 +87,32 @@ def train_standard_autoencoder(  # noqa: PLR0913
     return model
 
 
-def run(logging_dir: str):
+def run(logging_dir: str) -> None:
     """Run experiment: standard autoencoder reconstruction."""
     for bs in [32, 64, 128]:
         for lr in [0.1, 0.001, 0.0001]:
-            for epochs in [3, 5, 10]:
-                model_config = AutoencoderConfig()
+            model_config = AutoencoderConfig()
 
-                dataset_config = DatasetConfig(
-                    dataset_name="cifar10",
-                    batch_size=bs,
-                    validation_split=0.1,
-                )
+            dataset_config = DatasetConfig(
+                dataset_name="cifar10",
+                batch_size=bs,
+                validation_split=0.1,
+            )
 
-                train_config = TrainConfig(
-                    optimizer="adam",
-                    learning_rate=lr,
-                    n_epochs=epochs,
-                )
+            train_config = TrainConfig(
+                optimizer="adam",
+                learning_rate=lr,
+                n_epochs=10,
+            )
 
-                cmlogger = CavemanLogger(root_dir=logging_dir)
+            cmlogger = CavemanLogger(root_dir=logging_dir)
 
-                train_standard_autoencoder(
-                    model_config=model_config,
-                    dataset_config=dataset_config,
-                    train_config=train_config,
-                    logger=cmlogger,
-                    validation_interval=1,
-                    test_interval=1,
-                    visualization_interval=1,
-                )
+            train_standard_autoencoder(
+                model_config=model_config,
+                dataset_config=dataset_config,
+                train_config=train_config,
+                logger=cmlogger,
+                validation_interval=1,
+                test_interval=1,
+                visualization_interval=1,
+            )
