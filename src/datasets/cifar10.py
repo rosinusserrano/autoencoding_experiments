@@ -1,16 +1,13 @@
 """Module for Cifar 10 dataset fetching."""
 
-from collections.abc import Callable
-
 from torch.utils.data import Dataset, random_split
 from torchvision.datasets import CIFAR10
+from torchvision.transforms import v2
 
 
 def get_cifar10_datasets(
     root: str = "data",
     validation_split: float | None = None,
-    train_transforms: Callable | None = None,
-    test_transforms: Callable | None = None,
 ) -> tuple[Dataset, Dataset, Dataset]:
     """Get CIFAR 10 dataset as PyTorch `Dataset`.
 
@@ -20,7 +17,13 @@ def get_cifar10_datasets(
     train_set = CIFAR10(
         root,
         train=True,
-        transform=train_transforms,
+        transform=v2.Compose(
+            [
+                v2.ToTensor(),
+                v2.RandomResizedCrop((32, 32), scale=(0.5, 1)),
+                v2.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+            ],
+        ),
         download=True,
     )
 
@@ -37,7 +40,7 @@ def get_cifar10_datasets(
     test_set = CIFAR10(
         root,
         train=False,
-        transform=test_transforms,
+        transform=v2.ToTensor(),
         download=True,
     )
 

@@ -30,19 +30,6 @@ def load_data(
     if config.dataset_name == "cifar10":
         datasets = get_cifar10_datasets(
             validation_split=config.validation_split,
-            train_transforms=Compose(
-                [
-                    ToTensor(),
-                    RandomResizedCrop((32, 32), scale=(0.2, 1)),
-                    Normalize(mean=[125, 125, 125], std=[125, 125, 125]),
-                ],
-            ),
-            test_transforms=Compose(
-                [
-                    ToTensor(),
-                    Normalize(mean=[125, 125, 125], std=[125, 125, 125]),
-                ],
-            ),
         )
         train_set, validation_set, test_set = datasets
 
