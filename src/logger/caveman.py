@@ -116,7 +116,7 @@ class CavemanLogger(Logger):
 
         if method == "append":
             index = len(
-                list(filter(lambda f: title in f, os.listdir(self.root_dir))),
+                list(filter(lambda f: title in f, os.listdir(self.image_dir))),
             )
             filename = f"{filename}_{index}"
 
