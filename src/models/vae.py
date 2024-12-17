@@ -11,6 +11,9 @@ from models.autoencoder import AutoencoderConfig
 from utils.nn import ResidualBlock, downsample_conv, upsample_conv
 
 
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+
 @dataclass
 class VAEConfig(AutoencoderConfig):
     """Configuration for Variational Autoencoder."""
@@ -26,7 +29,7 @@ class VAE(nn.Module):
     def __init__(self, config: VAEConfig) -> None:
         """Initilize VAE."""
         super().__init__()
-        
+
         self.config = config
 
         self.encoder = nn.Sequential(
@@ -87,6 +90,7 @@ class VAE(nn.Module):
 
         # Reparameterization trick
         z = mean[:, None] + isotropic_noise * torch.exp(0.5 * logvar[:, None])
+        z = z.to(DEVICE)
 
         # Flatten augmentation dimension to feed into decoder
         z_flattened = z.reshape(
