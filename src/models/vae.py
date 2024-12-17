@@ -89,8 +89,9 @@ class VAE(nn.Module):
         )
 
         # Reparameterization trick
-        z = mean[:, None] + isotropic_noise * torch.exp(0.5 * logvar[:, None])
-        z = z.to(DEVICE)
+        z = mean[:, None] + isotropic_noise.to(DEVICE) * torch.exp(
+            0.5 * logvar[:, None],
+        )
 
         # Flatten augmentation dimension to feed into decoder
         z_flattened = z.reshape(
@@ -136,4 +137,3 @@ def mse_and_kld_loss(
     )
 
     return mse + model_config.kld_weight * kld
-
