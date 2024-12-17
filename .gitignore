@@ -3,3 +3,4 @@ uv.lock
 *.pyc
 data
 testrun
+runs

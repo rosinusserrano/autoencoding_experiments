@@ -50,6 +50,11 @@ class Logger(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def log_message(self, message: str) -> None:
+        """Log message."""
+        raise NotImplementedError
+
+    @abstractmethod
     def save(
         self,
         model: nn.Module | None = None,

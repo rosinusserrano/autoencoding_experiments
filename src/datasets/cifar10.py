@@ -44,7 +44,4 @@ def get_cifar10_datasets(
         download=True,
     )
 
-    if validation_split is not None:
-        return train_set, validation_set, test_set
-
-    return train_set, test_set
+    return train_set, validation_set, test_set

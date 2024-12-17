@@ -5,14 +5,9 @@ from itertools import pairwise
 
 import torch
 from torch import nn
-from torch.nn import functional as F  # noqa: N812
 
-from datasets import DatasetConfig, load_data
-from logger.base import Logger
-from utils.evaluate import EvalMode, evaluate
+from utils.evaluate import EvalMode
 from utils.nn import ResidualBlock, downsample_conv, upsample_conv
-from utils.train import TrainConfig, create_optimizer, train_one_epoch
-from utils.visuals import show_side_by_side
 
 
 @dataclass
@@ -39,6 +34,9 @@ class AutoencoderConfig:
     upsampling_channels: list[int] = field(
         default_factory=lambda: [256, 256, 3],
     )
+
+    # Execution behaviour
+    return_latents: bool = False
 
 
 class Autoencoder(nn.Module):
@@ -88,7 +86,12 @@ class Autoencoder(nn.Module):
 
     def forward(self, tensor: torch.Tensor) -> torch.Tensor:
         """Reconstruct images with the Autoencoder."""
-        return self.decoder(self.encoder(tensor))
+        latents = self.encoder(tensor)
+
+        if self.config.return_latents:
+            return self.decoder(latents), latents
+
+        return self.decoder(latents)
 
     def reconstruct(self, images: torch.Tensor) -> torch.Tensor:
         """Reconstruct images as in forward, but in eval mode."""

@@ -19,7 +19,11 @@ from logger.base import Logger
 class CavemanLogger(Logger):
     """Most basic logger: print to stdout and save to filesystem."""
 
-    def __init__(self, root_dir: str | Path) -> None:
+    def __init__(
+        self,
+        root_dir: str | Path,
+        experiment_name: str | None = None,
+    ) -> None:
         """Most basic logger: print to stdout and save to filesystem."""
         self.root_dir = Path(root_dir)
         if not Path.exists(self.root_dir):
@@ -27,7 +31,11 @@ class CavemanLogger(Logger):
 
         run_index = len(os.listdir(self.root_dir))
         human_id = generate_id(word_count=3)
-        run_id = f"{run_index:03d}-{human_id}"
+        run_id = (
+            f"{run_index:03d}-{human_id}"
+            if experiment_name is None
+            else f"{run_index:03d}-{experiment_name}"
+        )
         self.run_dir = Path(f"{root_dir}/{run_id}")
 
         self.plots_dir = Path(f"{self.run_dir}/plots")
@@ -146,9 +154,10 @@ class CavemanLogger(Logger):
             plt.plot(epochs, values)
             plt.title(metric_name)
             plt.savefig(f"{self.plots_dir}/{metric_name}")
-        
+
         if len(self.grouped_metrics.items()) > 0:
-            print("Grouped metrics not yet supported sorry.")
+            msg = "Grouped metrics not yet supported sorry."
+            raise ValueError(msg)
 
     def save(
         self,
@@ -161,3 +170,7 @@ class CavemanLogger(Logger):
 
         if optimizer is not None:
             torch.save(optimizer.state_dict(), f"{self.run_dir}/optimizer.pth")
+
+    def log_message(self, message: str) -> None:
+        """Print message to stdout."""
+        print(message)  # noqa: T201

@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Literal
 
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 from torchvision.transforms.v2 import (
     Compose,
     RandomResizedCrop,
@@ -21,6 +21,7 @@ class DatasetConfig:
     dataset_name: Literal["cifar10", "mnist", "fashionmnist"]
     validation_split: float | None = None
     batch_size: int = 32
+    subset_ratio: float | None = None
 
 
 def load_data(
@@ -36,6 +37,17 @@ def load_data(
     else:
         msg = "Only CIFAR10 dataset implemented until now."
         raise NotImplementedError(msg)
+
+    if config.subset_ratio is not None:
+        if config.subset_ratio > 1 or config.subset_ratio < 0:
+            msg = "subset_ratio should be between 0 and 1."
+            raise ValueError(msg)
+
+        split = [config.subset_ratio, 1 - config.subset_ratio]
+        train_set, _ = random_split(train_set, split)
+        if validation_set is not None:
+            validation_set, _ = random_split(validation_set, split)
+        test_set, _ = random_split(test_set, split)
 
     train_loader = DataLoader(
         train_set,
