@@ -75,7 +75,7 @@ def train_standard_vae_on_cifar(
             and epoch % visualization_interval == 0
         ):
             with EvalMode(model):
-                images, _ = next(iter(train_loader))
+                images, _ = next(iter(test_loader))
                 images = images[:8].to(device)
                 reconstructions = model(images)[0]
                 side_by_side = show_side_by_side(images, reconstructions)
