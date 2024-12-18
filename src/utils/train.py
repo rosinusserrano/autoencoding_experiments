@@ -8,6 +8,7 @@ import torch
 from torch import nn
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
+from tqdm.auto import tqdm
 
 from datasets import DatasetConfig, load_data
 from logger.base import Logger
@@ -53,7 +54,7 @@ def train_one_epoch(
     """Train a model for one epoch."""
     stats = {}
 
-    for batch, labels in train_loader:
+    for batch, labels in tqdm(train_loader):
         batch, labels = batch.to(DEVICE), labels.to(DEVICE)  # noqa: PLW2901
         if reconstruct:
             labels = batch  # noqa: PLW2901
