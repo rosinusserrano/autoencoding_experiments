@@ -29,6 +29,7 @@ class Logger(ABC):
         """Log a metric for a given epoch, which has a name and a value."""
         raise NotImplementedError
 
+    @abstractmethod
     def log_grouped_metric(
         self,
         metric_name: str,
