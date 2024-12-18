@@ -32,6 +32,7 @@ def load_data(
         datasets = get_stl10_datasets(
             validation_split=config.validation_split,
         )
+        train_set, validation_set, test_set = datasets
     else:
         msg = "Only cifar and stl dataset implemented until now."
         raise NotImplementedError(msg)
