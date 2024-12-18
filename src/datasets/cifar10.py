@@ -1,5 +1,6 @@
 """Module for Cifar 10 dataset fetching."""
 
+import torch
 from torch.utils.data import Dataset, random_split
 from torchvision.datasets import CIFAR10
 from torchvision.transforms import v2
@@ -19,7 +20,8 @@ def get_cifar10_datasets(
         train=True,
         transform=v2.Compose(
             [
-                v2.ToTensor(),
+                v2.ToImage(),
+                v2.ToDtype(torch.float32, scale=True),
                 v2.RandomResizedCrop((32, 32), scale=(0.5, 1)),
                 v2.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
             ],
@@ -40,7 +42,9 @@ def get_cifar10_datasets(
     test_set = CIFAR10(
         root,
         train=False,
-        transform=v2.ToTensor(),
+        transform=v2.Compose(
+            [v2.ToImage(), v2.ToDtype(torch.float32, scale=True)],
+        ),
         download=True,
     )
 
