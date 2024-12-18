@@ -4,21 +4,16 @@ from dataclasses import dataclass
 from typing import Literal
 
 from torch.utils.data import DataLoader, random_split
-from torchvision.transforms.v2 import (
-    Compose,
-    RandomResizedCrop,
-    ToTensor,
-    Normalize,
-)
 
 from datasets.cifar10 import get_cifar10_datasets
+from datasets.stl10 import get_stl10_datasets
 
 
 @dataclass
 class DatasetConfig:
     """Configuration for dataset fetching."""
 
-    dataset_name: Literal["cifar10", "mnist", "fashionmnist"]
+    dataset_name: Literal["cifar10", "stl10"]
     validation_split: float | None = None
     batch_size: int = 32
     subset_ratio: float | None = None
@@ -33,9 +28,12 @@ def load_data(
             validation_split=config.validation_split,
         )
         train_set, validation_set, test_set = datasets
-
+    elif config.dataset_name == "stl10":
+        datasets = get_stl10_datasets(
+            validation_split=config.validation_split,
+        )
     else:
-        msg = "Only CIFAR10 dataset implemented until now."
+        msg = "Only cifar and stl dataset implemented until now."
         raise NotImplementedError(msg)
 
     if config.subset_ratio is not None:
