@@ -126,6 +126,8 @@ def get_activation_by_name(name: str) -> nn.Module | Callable:
     raise ValueError(msg)
 
 
+LossFn = Callable[[torch.Tensor, ...], tuple[torch.Tensor, dict | None]]
+
 LossFnName = Literal[
     "mse",
     "cross_entropy",
@@ -136,16 +138,22 @@ LossFnName = Literal[
 
 def get_loss_fn_by_name(
     name: LossFnName,
-) -> Callable:
+) -> LossFn:
     """Return a function specified by the name string."""
     if name == "mse":
-        return F.mse_loss
+        return lambda y_hat, y_true: (F.mse_loss(y_hat, y_true), None)
     if name == "cross_entropy":
-        return F.cross_entropy
+        return lambda y_hat, y_true: (F.cross_entropy(y_hat, y_true), None)
     if name == "binary_cross_entropy":
-        return F.binary_cross_entropy
+        return lambda y_hat, y_true: (
+            F.binary_cross_entropy(y_hat, y_true),
+            None,
+        )
     if name == "binary_cross_entropy_with_logits":
-        return F.binary_cross_entropy_with_logits
+        return lambda y_hat, y_true: (
+            F.binary_cross_entropy_with_logits(y_hat, y_true),
+            None,
+        )
 
     msg = f"Activation with name {name} isn't supported yet sorry :)"
     raise NotImplementedError(msg)

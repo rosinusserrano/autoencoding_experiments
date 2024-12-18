@@ -8,8 +8,10 @@ from torch import nn
 from torch.nn import functional as F
 
 from models.autoencoder import AutoencoderConfig
+from models.base import VAEXPModel
+from utils.evaluate import EvalMode
 from utils.nn import ResidualBlock, downsample_conv, upsample_conv
-
+from utils.visuals import show_side_by_side
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -23,7 +25,7 @@ class VAEConfig(AutoencoderConfig):
     n_augmentation: int = 1
 
 
-class VAE(nn.Module):
+class VAE(VAEXPModel):
     """Variational Autoencoder."""
 
     def __init__(self, config: VAEConfig) -> None:
@@ -115,6 +117,36 @@ class VAE(nn.Module):
 
         return decoded, mean, logvar
 
+    def visualize_test_batch(
+        self,
+        testbatch: tuple[torch.Tensor, torch.Tensor],
+    ) -> dict[str, torch.Tensor]:
+        """Reconstructs test batch and generates new samples."""
+        with EvalMode(self):
+            images = testbatch[0]
+            images = images[:8].to(DEVICE)
+            reconstructions = self.forward(images)[0]
+            side_by_side = show_side_by_side(images, reconstructions)
+
+            img_height, img_width = images.shape[-2:]
+            downscale_factor = 2 ** (
+                len(self.config.downsampling_channels) - 1
+            )
+            latent_height = img_height * downscale_factor
+            latent_width = img_width * downscale_factor
+            prior_latents = torch.randn(
+                8,
+                self.config.latent_channels,
+                latent_height,
+                latent_width,
+            ).to(DEVICE)
+            generations = (self.decoder(prior_latents) + 1) / 2
+
+            return {
+                "VAE_reconstructions": side_by_side,
+                "VAE_generations": generations,
+            }
+
 
 def mse_and_kld_loss(
     model_outputs: tuple[torch.Tensor, ...],
@@ -136,4 +168,11 @@ def mse_and_kld_loss(
         dim=0,
     )
 
-    return mse + model_config.kld_weight * kld
+    loss = mse + model_config.kld_weight * kld
+
+    return loss, {
+        "kld_loss_weighted": model_config.kld_weight * kld.item(),
+        "kld_loss": kld.item(),
+        "mse_loss": mse.item(),
+        "total_loss": loss.item(),
+    }

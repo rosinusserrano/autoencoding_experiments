@@ -6,12 +6,13 @@ from itertools import pairwise
 import torch
 from torch import nn
 
+from models.base import ModelConfig, VAEXPModel
 from utils.evaluate import EvalMode
 from utils.nn import ResidualBlock, downsample_conv, upsample_conv
 
 
 @dataclass
-class AutoencoderConfig:
+class AutoencoderConfig(ModelConfig):
     """Config for Autoencoder."""
 
     name: str = "Autoencoder"
@@ -25,7 +26,7 @@ class AutoencoderConfig:
     )
 
     # Bottleneck
-    latent_channels: int = 16
+    latent_channels: int = 256
 
     # Decoder
     decoder_residual_channels: list[int] = field(
@@ -39,7 +40,8 @@ class AutoencoderConfig:
     return_latents: bool = False
 
 
-class Autoencoder(nn.Module):
+
+class Autoencoder(VAEXPModel):
     """A basic implementation of an autoencoder."""
 
     def __init__(self, config: AutoencoderConfig) -> None:

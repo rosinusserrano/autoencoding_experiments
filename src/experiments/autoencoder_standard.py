@@ -28,6 +28,8 @@ def train_standard_autoencoder(  # noqa: PLR0913
     visualization_interval: int | None = None,
 ) -> Autoencoder:
     """Train the autoencoder."""
+    msg = "This function has to be adapted to use the new training function wrapper and specifically the new loss function format."
+    raise NotImplementedError(msg)
     model = Autoencoder(model_config)
     train_loader, val_loader, test_loader = load_data(dataset_config)
     optimizer = create_optimizer(train_config=train_config, model=model)
