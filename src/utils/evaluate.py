@@ -6,6 +6,8 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 
+from utils.stats import append_dict_values, average_dict_values
+
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
@@ -38,7 +40,7 @@ def evaluate(
     reconstruct: bool = False,
 ) -> float:
     """Train a model for one epoch."""
-    losses = []
+    stats = {}
 
     with EvalMode(model):
         for batch, labels in test_loader:
@@ -47,7 +49,7 @@ def evaluate(
                 labels = batch  # noqa: PLW2901
 
             preds = model(batch)
-            loss = loss_fn(preds, labels)
-            losses.append(loss.item())
+            loss, batch_stats = loss_fn(preds, labels)
+            append_dict_values(stats, batch_stats)
 
-    return sum(losses) / len(losses)
+    return average_dict_values(stats)
