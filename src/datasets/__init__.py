@@ -14,6 +14,7 @@ class DatasetConfig:
     """Configuration for dataset fetching."""
 
     dataset_name: Literal["cifar10", "stl10"]
+    root: str = "data"
     validation_split: float | None = None
     batch_size: int = 32
     subset_ratio: float | None = None
@@ -25,11 +26,13 @@ def load_data(
     """Fetch datasets and put into dataloaders."""
     if config.dataset_name == "cifar10":
         datasets = get_cifar10_datasets(
+            root=config.root,
             validation_split=config.validation_split,
         )
         train_set, validation_set, test_set = datasets
     elif config.dataset_name == "stl10":
         datasets = get_stl10_datasets(
+            root=config.root,
             validation_split=config.validation_split,
         )
         train_set, validation_set, test_set = datasets
