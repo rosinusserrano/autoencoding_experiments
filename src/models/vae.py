@@ -132,8 +132,8 @@ class VAE(VAEXPModel):
             downscale_factor = 2 ** (
                 len(self.config.downsampling_channels) - 1
             )
-            latent_height = img_height * downscale_factor
-            latent_width = img_width * downscale_factor
+            latent_height = img_height / downscale_factor
+            latent_width = img_width / downscale_factor
             prior_latents = torch.randn(
                 8,
                 self.config.latent_channels,
