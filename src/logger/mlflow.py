@@ -13,17 +13,34 @@ from logger.base import Logger
 class MlFlowLogger(Logger):
     """Logger for MLFlow."""
 
-    def __init__(self, experiment_name: str, remote_url: str) -> None:
+    def __init__(
+        self,
+        experiment_name: str,
+        remote_url: str,
+        debug: bool = False,
+    ) -> None:
         """Initialize MLFlow logger."""
         self.experiment_name = experiment_name
         self.remote_url = remote_url
+        self.debug = debug
 
+        self.print("Setting tracking uri for mlflow")
         mlflow.set_tracking_uri(self.remote_url)
         self.experiment = mlflow.set_experiment(self.experiment_name)
+        self.print(
+            f"Created experiment with id {self.experiment.experiment_id}"
+        )
+        self.print("Starting run")
         mlflow.start_run()
+
+    def print(self, *msg: str) -> None:
+        """Print if in debug mode."""
+        if self.debug:
+            print(*msg)  # noqa: T201
 
     def log_configs(self, configs: dict[str, dict]) -> None:
         """Log configs, usually at beginning of training."""
+        self.print("Logging configs.")
         for config_name, config_dict in configs.items():
             mlflow.log_dict(config_dict, f"{config_name}.yaml")
 
@@ -34,6 +51,7 @@ class MlFlowLogger(Logger):
         epoch: int,
     ) -> None:
         """Log metric to mlflow."""
+        self.print("Logging", metric_name, metric_value)
         mlflow.log_metric(metric_name, metric_value, epoch)
 
     def log_grouped_metric(
@@ -57,6 +75,7 @@ class MlFlowLogger(Logger):
         method: Literal["append", "update"] = "append",
     ) -> None:
         """Log images to mflow."""
+        self.print("Logging images for epoch", epoch)
         if images.dim() == 4:  # batched images  # noqa: PLR2004
             final_image = (
                 make_grid(
@@ -91,6 +110,7 @@ class MlFlowLogger(Logger):
         optimizer: torch.optim.Optimizer | None = None,
     ) -> None:
         """Save model and optimizer to mlflow."""
+        self.print("Savong models and optimizers.")
         if model is not None:
             save_model(model, "model")
         if optimizer is not None:
@@ -102,4 +122,5 @@ class MlFlowLogger(Logger):
 
     def wrapup(self) -> None:
         """Close mlflow run."""
+        self.print("Closing run.")
         mlflow.end_run()
