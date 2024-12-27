@@ -113,6 +113,7 @@ class CavemanLogger(Logger):
     def log_image_tensor(
         self,
         images: torch.Tensor,
+        epoch: int,
         title: str = "",
         method: Literal["update", "append"] = "append",
     ) -> None:
@@ -132,10 +133,7 @@ class CavemanLogger(Logger):
         filename = title
 
         if method == "append":
-            index = len(
-                list(filter(lambda f: title in f, os.listdir(self.image_dir))),
-            )
-            filename = f"{filename}_{index}"
+            filename = f"{filename}_{epoch}"
 
         plt.imsave(
             f"{self.image_dir}/{filename}.png",

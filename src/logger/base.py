@@ -44,6 +44,7 @@ class Logger(ABC):
     def log_image_tensor(
         self,
         images: torch.Tensor,
+        epoch: int,
         title: str = "",
         method: Literal["append", "update"] = "append",
     ) -> None:
