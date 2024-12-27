@@ -101,7 +101,10 @@ class MlFlowLogger(Logger):
             msg = "Method 'update' doesn't affect image uploads in mlflow."
             raise UserWarning(msg)
 
-        mlflow.log_image(image=final_image, key=title, step=epoch)
+        mlflow.log_image(
+            image=final_image,
+            artifact_file=f"{title}_{epoch:3d}.png",
+        )
 
     def log_message(self, message: str) -> None:
         """Log simple message into some file."""
