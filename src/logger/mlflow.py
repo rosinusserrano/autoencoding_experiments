@@ -15,11 +15,11 @@ class MlFlowLogger(Logger):
 
     def __init__(self, experiment_name: str, remote_url: str) -> None:
         """Initialize MLFlow logger."""
-        self.experiment_name = (experiment_name,)
+        self.experiment_name = experiment_name
         self.remote_url = remote_url
 
         mlflow.set_tracking_uri(self.remote_url)
-        mlflow.set_experiment(self.experiment_name)
+        self.experiment = mlflow.set_experiment(self.experiment_name)
         mlflow.start_run()
 
     def log_configs(self, configs: dict[str, dict]) -> None:
