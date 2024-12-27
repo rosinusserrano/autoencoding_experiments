@@ -142,3 +142,5 @@ def standard_training_pipeline(  # noqa: PLR0913
                     title=title,
                     epoch=epoch,
                 )
+
+    logger.wrapup()
