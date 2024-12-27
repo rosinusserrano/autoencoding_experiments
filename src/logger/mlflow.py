@@ -43,6 +43,9 @@ class MlFlowLogger(Logger):
         self.print("Logging configs.")
         for config_name, config_dict in configs.items():
             mlflow.log_dict(config_dict, f"{config_name}.yaml")
+            mlflow.log_params(
+                {f"{config_name}.k": v for k, v in config_dict.items()},
+            )
 
     def log_metric(
         self,
