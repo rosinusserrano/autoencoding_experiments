@@ -164,7 +164,7 @@ def mse_and_kld_loss(
 
     mse = F.mse_loss(decoded, target)
     kld = torch.mean(
-        -0.5 * torch.sum(1 + logvar - mean**2 - logvar.exp(), dim=(1, 2, 3)),
+        -0.5 * torch.mean(1 + logvar - mean**2 - logvar.exp(), dim=(1, 2, 3)),
         dim=0,
     )
 
