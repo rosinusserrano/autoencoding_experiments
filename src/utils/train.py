@@ -140,4 +140,5 @@ def standard_training_pipeline(  # noqa: PLR0913
                 logger.log_image_tensor(
                     images=imgtensor,
                     title=title,
+                    epoch=epoch,
                 )
