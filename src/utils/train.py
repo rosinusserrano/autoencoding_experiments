@@ -1,7 +1,7 @@
 """Util functions for training."""
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import Literal
 
 import torch
@@ -89,9 +89,9 @@ def standard_training_pipeline(  # noqa: PLR0913
 
     logger.log_configs(
         {
-            "model": model_config,
-            "training": train_config,
-            "dataset": dataset_config,
+            "model": asdict(model_config),
+            "training": asdict(train_config),
+            "dataset": asdict(dataset_config),
         },
     )
 
