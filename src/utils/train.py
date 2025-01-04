@@ -27,6 +27,7 @@ class TrainConfig:
     optimizer: Literal["adam", "sgd"]
     learning_rate: float
     n_epochs: int
+    weight_decay: float
 
 
 def create_optimizer(
@@ -35,9 +36,10 @@ def create_optimizer(
 ) -> Optimizer:
     """Create a optimizer with given config for given model."""
     if train_config.optimizer == "adam":
-        return torch.optim.Adam(
+        return torch.optim.AdamW(
             model.parameters(),
             lr=train_config.learning_rate,
+            weight_decay=train_config.weight_decay,
         )
 
     raise NotImplementedError
