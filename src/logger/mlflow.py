@@ -3,8 +3,8 @@
 from typing import Literal
 
 import mlflow
-from mlflow.pytorch import save_model, save_state_dict
 import torch
+from mlflow.pytorch import save_model, save_state_dict
 from torchvision.utils import make_grid
 
 from logger.base import Logger

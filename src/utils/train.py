@@ -1,7 +1,6 @@
 """Util functions for training."""
 
-from collections.abc import Callable
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Literal
 
 import torch
@@ -15,7 +14,7 @@ from logger.base import Logger
 from models import ModelConfig, create_model
 from utils.evaluate import evaluate
 from utils.nn import LossFn
-from utils.stats import append_dict_values, average_dict_values
+from utils.stats import append_dict_values, average_dict_values, withtime
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -102,13 +101,16 @@ def standard_training_pipeline(  # noqa: PLR0913
     logger.log_message(f"On device: {device}")
 
     for epoch in range(train_config.n_epochs):
-        train_stats = train_one_epoch(
+        epoch_duration, train_stats = withtime(
+            train_one_epoch,
             model,
             train_loader,
             optimizer,
             loss_fn,
             reconstruct=True,
         )
+
+        logger.log_metric("train_epoch_duration", epoch_duration, epoch)
         for key, value in train_stats.items():
             logger.log_metric(f"{key}_train", value, epoch)
 
