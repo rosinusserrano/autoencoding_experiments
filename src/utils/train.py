@@ -147,4 +147,5 @@ def standard_training_pipeline(  # noqa: PLR0913
                     epoch=epoch,
                 )
 
+    logger.save(model=model, optimizer=optimizer)
     logger.wrapup()

@@ -105,7 +105,7 @@ class VAE(VAEXPModel):
 
         decoded = self.decoder(z_flattened)
 
-        # Reshape back to separate augmentation dimension
+        # Reshape back to separate augmentation dimension if > 1
         decoded = decoded.reshape(
             batch_size,
             self.config.n_augmentation,
