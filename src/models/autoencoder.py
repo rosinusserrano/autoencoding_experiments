@@ -114,3 +114,9 @@ class Autoencoder(VAEXPModel):
             return {
                 "AE_Reconstructions": side_by_side,
             }
+
+
+def mse_loss(inp: torch.Tensor, target: torch.Tensor):
+    """Compute mse loss loss return with dict for stats."""
+    loss = nn.functional.mse_loss(inp, target)
+    return loss, {"mse": loss.item()}
