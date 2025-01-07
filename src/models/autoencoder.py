@@ -9,6 +9,7 @@ from torch import nn
 from models.base import ModelConfig, VAEXPModel
 from utils.evaluate import EvalMode
 from utils.nn import ResidualBlock, downsample_conv, upsample_conv
+from utils.visuals import show_side_by_side
 
 
 @dataclass
@@ -38,7 +39,6 @@ class AutoencoderConfig(ModelConfig):
 
     # Execution behaviour
     return_latents: bool = False
-
 
 
 class Autoencoder(VAEXPModel):
@@ -99,3 +99,18 @@ class Autoencoder(VAEXPModel):
         """Reconstruct images as in forward, but in eval mode."""
         with EvalMode(self):
             return self.forward(images)
+
+    def visualize_test_batch(
+        self,
+        testbatch: tuple[torch.Tensor, torch.Tensor],
+    ) -> dict[str, torch.Tensor]:
+        """Reconstructs test batch and generates new samples."""
+        with EvalMode(self):
+            images = testbatch[0]
+            images = images[:8]
+            reconstructions = self.forward(images)[0]
+            side_by_side = show_side_by_side(images, reconstructions)
+
+            return {
+                "AE_Reconstructions": side_by_side,
+            }
