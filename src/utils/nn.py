@@ -114,6 +114,32 @@ def conv_act_norm(  # noqa: PLR0913
     )
 
 
+def lin_act_norm(
+    in_features: int,
+    out_features: int,
+    activation: str = "relu",
+    normalization: str | None = "batchnorm1d",
+) -> nn.Sequential:
+    """Return a sequential module of Linear -> Activation -> Normalization."""
+    module = nn.Sequential(
+        nn.Linear(
+            in_features=in_features,
+            out_features=out_features,
+        ),
+    )
+
+    if activation is not None:
+        module.append(get_activation_by_name(activation))
+
+    if normalization is not None:
+        module.append(
+            get_normalization_by_name(
+                normalization,
+                num_features=out_features,
+            ),
+        )
+
+
 def get_activation_by_name(name: str) -> nn.Module | Callable:
     """Return the activation module given a name."""
     if name == "relu":
@@ -123,6 +149,15 @@ def get_activation_by_name(name: str) -> nn.Module | Callable:
         return nn.Tanh()
 
     msg = f"The activation '{name}' isn't defined"
+    raise ValueError(msg)
+
+
+def get_normalization_by_name(name: str, **kwargs) -> nn.Module:  # noqa: ANN003
+    """Return normalization module by name."""
+    if name == "batchnorm1d":
+        return nn.BatchNorm1d(**kwargs)
+
+    msg = "Only batchnorm1d implemented"
     raise ValueError(msg)
 
 
