@@ -138,7 +138,7 @@ def standard_training_pipeline(  # noqa: PLR0913
             visualization_interval is not None
             and epoch % visualization_interval == 0
         ):
-            testbatch = next(iter(val_loader)).to(DEVICE)
+            testbatch = next(iter(val_loader))
             visualizations = model.visualize_test_batch(testbatch)
             for title, imgtensor in visualizations.items():
                 logger.log_image_tensor(

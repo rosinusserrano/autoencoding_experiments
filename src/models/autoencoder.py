@@ -11,6 +11,8 @@ from utils.evaluate import EvalMode
 from utils.nn import ResidualBlock, downsample_conv, upsample_conv
 from utils.visuals import show_side_by_side
 
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
 
 @dataclass
 class AutoencoderConfig(ModelConfig):
@@ -106,7 +108,7 @@ class Autoencoder(VAEXPModel):
     ) -> dict[str, torch.Tensor]:
         """Reconstructs test batch and generates new samples."""
         with EvalMode(self):
-            images = testbatch[0]
+            images = testbatch[0].to(DEVICE)
             images = images[:8]
             reconstructions = self.forward(images)[0]
             side_by_side = show_side_by_side(images, reconstructions)
@@ -115,8 +117,7 @@ class Autoencoder(VAEXPModel):
                 "AE_Reconstructions": side_by_side,
             }
 
-
-def mse_loss(inp: torch.Tensor, target: torch.Tensor):
+def mse_loss(inp: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     """Compute mse loss loss return with dict for stats."""
     loss = nn.functional.mse_loss(inp, target)
     return loss, {"mse": loss.item()}
