@@ -15,6 +15,7 @@ def create_model(config: ModelConfig) -> VAEXPModel:
     if config.name == "Autoencoder":
         return Autoencoder(config)
     if config.name == "AutoencoderV2":
+        print("Returning ae v2")
         return AutoencoderV2(config)
     if config.name == "VAE":
         return VAE(config)
