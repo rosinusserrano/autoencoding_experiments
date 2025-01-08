@@ -119,7 +119,7 @@ class MlFlowLogger(Logger):
         """Save model and optimizer to mlflow."""
         self.print("Savong models and optimizers.")
         if model is not None:
-            log_state_dict(model.state_dict, "model")
+            log_state_dict(model.state_dict(), "model")
         if optimizer is not None:
             log_state_dict(optimizer.state_dict(), "optimizer")
 
