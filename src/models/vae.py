@@ -176,3 +176,36 @@ def mse_and_kld_loss(
         "mse_loss": mse.item(),
         "total_loss": loss.item(),
     }
+
+def min_mse_and_kld_loss(
+    model_outputs: tuple[torch.Tensor, ...],
+    target: torch.Tensor,
+    model_config: VAEConfig,
+) -> tuple[torch.Tensor, dict]:
+    """Compute sum of mse loss and weighted kld loss."""
+    if model_config.return_latents:
+        decoded, mean, logvar, latents = model_outputs
+    else:
+        decoded, mean, logvar = model_outputs
+
+    if model_config.n_augmentation > 1:
+        target = target[:, None]
+
+    mse_nonreduced = F.mse_loss(decoded, target, reduction="none")
+    mse_per_reconstruction = torch.mean(mse_nonreduced, dim=(2, 3, 4))
+    mse_of_min_augmentation = torch.min(mse_per_reconstruction, dim=1)
+    mse = torch.mean(mse_of_min_augmentation)
+
+    kld = torch.mean(
+        -0.5 * torch.mean(1 + logvar - mean**2 - logvar.exp(), dim=(1, 2, 3)),
+        dim=0,
+    )
+
+    loss = mse + model_config.kld_weight * kld
+
+    return loss, {
+        "kld_loss_weighted": model_config.kld_weight * kld.item(),
+        "kld_loss": kld.item(),
+        "mse_loss": mse.item(),
+        "total_loss": loss.item(),
+    }
