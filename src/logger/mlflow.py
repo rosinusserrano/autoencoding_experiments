@@ -120,7 +120,7 @@ class MlFlowLogger(Logger):
         if model is not None:
             save_model(model, "model")
         if optimizer is not None:
-            save_state_dict()
+            save_state_dict(optimizer.state_dict(), "optimizer")
 
         if optimizer is None and model is None:
             msg = "Using save function without optimizer nor model."
