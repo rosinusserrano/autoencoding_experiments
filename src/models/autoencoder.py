@@ -110,7 +110,7 @@ class Autoencoder(VAEXPModel):
         with EvalMode(self):
             images = testbatch[0].to(DEVICE)
             images = images[:8]
-            reconstructions = self.forward(images)[0]
+            reconstructions = self.forward(images)
             side_by_side = show_side_by_side(images, reconstructions)
 
             return {
