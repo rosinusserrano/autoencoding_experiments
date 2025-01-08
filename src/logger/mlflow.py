@@ -28,7 +28,7 @@ class MlFlowLogger(Logger):
         mlflow.set_tracking_uri(self.remote_url)
         self.experiment = mlflow.set_experiment(self.experiment_name)
         self.print(
-            f"Created experiment with id {self.experiment.experiment_id}"
+            f"Created experiment with id {self.experiment.experiment_id}",
         )
         self.print("Starting run")
         mlflow.start_run()
@@ -118,7 +118,7 @@ class MlFlowLogger(Logger):
         """Save model and optimizer to mlflow."""
         self.print("Savong models and optimizers.")
         if model is not None:
-            log_model(model, "model")
+            log_model(model, "model", input_example=torch.randn(4, 3, 96, 96))
         if optimizer is not None:
             log_state_dict(optimizer.state_dict(), "optimizer")
 
