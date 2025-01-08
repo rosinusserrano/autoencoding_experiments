@@ -130,7 +130,7 @@ def mse_loss(inp: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 
 
 @dataclass
-class AutoencoderV2Config(AutoencoderConfig):
+class AutoencoderV2Config(ModelConfig):
     """Config for the AE v2."""
 
     name: str = "AutoencoderV2"
@@ -186,10 +186,6 @@ class AutoencoderV2(VAEXPModel):
                 ResidualBlock(inc, outc)
                 for inc, outc in pairwise(config.encoder_residual_channels)
             ],
-            ResidualBlock(
-                config.encoder_residual_channels[-1],
-                config.latent_channels,
-            ),
         )
 
         self.encoder_fc = nn.Sequential(
@@ -207,10 +203,6 @@ class AutoencoderV2(VAEXPModel):
         )
 
         self.decoder_conv = nn.Sequential(
-            ResidualBlock(
-                config.latent_channels,
-                config.decoder_residual_channels[0],
-            ),
             *[
                 ResidualBlock(inc, outc)
                 for inc, outc in pairwise(config.decoder_residual_channels)
