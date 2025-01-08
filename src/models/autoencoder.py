@@ -177,7 +177,7 @@ class AutoencoderV2(VAEXPModel):
 
         self.config = config
 
-        self.encoder = nn.Sequential(
+        self.encoder_conv = nn.Sequential(
             *[
                 downsample_conv(inc, outc)
                 for inc, outc in pairwise(config.downsampling_channels)
@@ -190,17 +190,23 @@ class AutoencoderV2(VAEXPModel):
                 config.encoder_residual_channels[-1],
                 config.latent_channels,
             ),
+        )
+
+        self.encoder_fc = nn.Sequential(
             *[
                 lin_act_norm(in_feats, out_feats)
                 for in_feats, out_feats in pairwise(config.encoder_fc_features)
             ],
         )
 
-        self.decoder = nn.Sequential(
+        self.decoder_fc = nn.Sequential(
             *[
                 lin_act_norm(in_feats, out_feats)
                 for in_feats, out_feats in pairwise(config.decoder_fc_features)
             ],
+        )
+
+        self.decoder_conv = nn.Sequential(
             ResidualBlock(
                 config.latent_channels,
                 config.decoder_residual_channels[0],
@@ -222,13 +228,19 @@ class AutoencoderV2(VAEXPModel):
         )
 
     def forward(self, tensor: torch.Tensor) -> torch.Tensor:
-        """Reconstruct images with the Autoencoder."""
-        latents = self.encoder(tensor)
+        """Reconstruct images with the Autoencoder.
 
-        if self.config.return_latents:
-            return self.decoder(latents), latents
+        Assumes encoder fc and decoder fc are mirrored.
+        """
+        out = self.encoder_conv(tensor)
+        bs, c, h, w = out.shape
+        out = torch.flatten(out, start_dim=1)
+        out = self.encoder_fc(out)
+        out = self.decoder_fc(out)
+        out = torch.reshape(out, (bs, c, h, w))
+        out = self.decoder_conv(out)
 
-        return self.decoder(latents)
+        return out
 
     def reconstruct(self, images: torch.Tensor) -> torch.Tensor:
         """Reconstruct images as in forward, but in eval mode."""
