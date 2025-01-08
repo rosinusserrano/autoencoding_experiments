@@ -139,6 +139,8 @@ def lin_act_norm(
             ),
         )
 
+    return module
+
 
 def get_activation_by_name(name: str) -> nn.Module | Callable:
     """Return the activation module given a name."""
