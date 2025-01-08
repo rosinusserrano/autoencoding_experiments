@@ -226,8 +226,6 @@ class AutoencoderV2(VAEXPModel):
         """
         out = self.encoder_conv(tensor)
         bs, c, h, w = out.shape
-
-        print(bs, c, h, w)
         out = torch.flatten(out, start_dim=1)
         out = self.encoder_fc(out)
         out = self.decoder_fc(out)
