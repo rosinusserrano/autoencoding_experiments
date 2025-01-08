@@ -4,7 +4,7 @@ from typing import Literal
 
 import mlflow
 import torch
-from mlflow.pytorch import save_model, save_state_dict
+from mlflow.pytorch import log_model, log_state_dict
 from torchvision.utils import make_grid
 
 from logger.base import Logger
@@ -118,9 +118,9 @@ class MlFlowLogger(Logger):
         """Save model and optimizer to mlflow."""
         self.print("Savong models and optimizers.")
         if model is not None:
-            save_model(model, "model")
+            log_model(model, "model")
         if optimizer is not None:
-            save_state_dict(optimizer.state_dict(), "optimizer")
+            log_state_dict(optimizer.state_dict(), "optimizer")
 
         if optimizer is None and model is None:
             msg = "Using save function without optimizer nor model."
