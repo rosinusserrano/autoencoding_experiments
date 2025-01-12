@@ -20,6 +20,7 @@ main_parser.add_argument(
     "--experiment",
     "-e",
     help="The name of the experiment.",
+    required=True,
 )
 
 # TRAIN CONFIG
@@ -45,6 +46,7 @@ model_subparsers = main_parser.add_subparsers(
     title="Model config",
     description="This is the model you will ultimately train",
     dest="model",
+    required=True,
 )
 
 ae_parser = model_subparsers.add_parser(
@@ -82,7 +84,7 @@ model_config = AutoencoderV2Config(
 )
 
 dataset_config = DatasetConfig(
-    root="/workspace/drive",
+    root="/workspace/dataset/stl10",
     dataset_name="stl10",
     validation_split=0.1,
     batch_size=128,

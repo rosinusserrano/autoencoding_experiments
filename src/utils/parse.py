@@ -37,13 +37,12 @@ def config_to_parser(
         if get_origin(field.type) is Literal:
             kwargs["choices"] = list(get_args(field.type))
 
-        if field.default is not None and field.default is not MISSING:
+        if field.default is not  MISSING:
             kwargs["default"] = field.default
-        if (
-            field.default_factory is not None
-            and field.default_factory is not MISSING
-        ):
+        elif field.default_factory is not MISSING:
             kwargs["default"] = field.default_factory()
+        else:
+            kwargs["required"] = True
 
         if "help" in field.metadata:
             kwargs["help"] = field.metadata["help"]
