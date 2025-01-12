@@ -15,12 +15,12 @@ dataset_config = DatasetConfig(
     root="/workspace/drive",
     dataset_name="stl10",
     validation_split=0.1,
-    batch_size=32,
+    batch_size=128,
 )
 train_config = TrainConfig(
     "adam",
     learning_rate=0.0005,
-    n_epochs=3,
+    n_epochs=20,
     weight_decay=0.0001,
 )
 

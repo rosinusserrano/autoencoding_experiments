@@ -117,7 +117,7 @@ class MlFlowLogger(Logger):
         optimizer: torch.optim.Optimizer | None = None,
     ) -> None:
         """Save model and optimizer to mlflow."""
-        self.print("Savong models and optimizers.")
+        self.print("Saving model and optimizer.")
         if model is not None:
             log_state_dict(model.state_dict(), "model")
         if optimizer is not None:
