@@ -1,5 +1,7 @@
 """Run script."""
 
+import argparse
+
 import mlflow
 
 from datasets import DatasetConfig
@@ -9,7 +11,16 @@ from models.autoencoder import AutoencoderV2Config, mse_loss
 from models.vae import VAEConfig, mse_and_kld_loss
 from utils.train import TrainConfig, standard_training_pipeline
 
-model_config = AutoencoderV2Config()
+
+# parser = argparse.ArgumentParser(prog="aexp-run")
+
+# parser.add_argument("--model-name", "-m", )
+
+
+model_config = AutoencoderV2Config(
+    encoder_fc_features=[9216, 7680, 4096],
+    decoder_fc_features=[4096, 7680, 9216],
+)
 
 dataset_config = DatasetConfig(
     root="/workspace/drive",
