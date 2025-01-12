@@ -23,29 +23,36 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 class AutoencoderConfig(ModelConfig):
     """Config for Autoencoder."""
 
-    name: str = "Autoencoder"
+    name: str = field(default="Autoencoder", metadata={"fixed": True})
 
     # Encoder
     downsampling_channels: list[int] = field(
         default_factory=lambda: [3, 256, 256],
+        metadata={"help": "Downsampling channels"},
     )
     encoder_residual_channels: list[int] = field(
         default_factory=lambda: [256, 256, 256],
+        metadata={"help": "Encoder residual channels"},
     )
 
     # Bottleneck
-    latent_channels: int = 256
+    latent_channels: int = field(
+        default=256,
+        metadata={"help": "Latent channels"},
+    )
 
     # Decoder
     decoder_residual_channels: list[int] = field(
         default_factory=lambda: [256, 256, 256],
+        metadata={"help": "Decoder residual channels"},
     )
     upsampling_channels: list[int] = field(
         default_factory=lambda: [256, 256, 3],
+        metadata={"help": "Upsampling channels"},
     )
 
     # Execution behaviour
-    return_latents: bool = False
+    return_latents: bool = field(default=False, metadata={"help": ""})
 
 
 class Autoencoder(VAEXPModel):
@@ -133,38 +140,68 @@ def mse_loss(inp: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
 class AutoencoderV2Config(ModelConfig):
     """Config for the AE v2."""
 
-    name: str = "AutoencoderV2"
-    descriptions: str = (
-        "Upgrade to the fully convolutional autoencoder "
+    name: str = field(default="AutoencoderV2", metadata={"fixed": True})
+    description: str = field(
+        default="Upgrade to the fully convolutional autoencoder "
         "where there is a fully connected bottleneck to produce a more "
-        "compact but meaningful latent representation."
+        "compact but meaningful latent representation.",
+        metadata={"fixed": True},
     )
 
-    input_shape: tuple[int] = (3, 96, 96)
+    input_shape: list[int] = field(
+        default_factory=lambda: [3, 96, 96],
+        metadata={
+            "help": "Expected input shape for this model."
+            " Important because the fully connected bottleneck causes the"
+            " model not to wor for varying input shapes.",
+        },
+    )
 
     # Encoder
     downsampling_channels: list[int] = field(
         default_factory=lambda: [3, 256, 256],
+        metadata={
+            "help": "Specifies number of downsampling layers. First value is"
+            " number of input channels, last value is number of output"
+            " channels of downsampling part.",
+        },
     )
     encoder_residual_channels: list[int] = field(
         default_factory=lambda: [256, 256, 16],
+        metadata={
+            "help": "Encoder residual channels.",
+        },
     )
     encoder_fc_features: list[int] = field(
         default_factory=lambda: [9216, 4096, 1024],
+        metadata={
+            "help": "Encoder fully connected features.",
+        },
     )
 
     # Bottleneck
-    latent_channels: int = 256
+    latent_channels: int = field(
+        default=256, metadata={"help": "Latent channels"}
+    )
 
     # Decoder
     decoder_fc_features: list[int] = field(
         default_factory=lambda: [1024, 4096, 9216],
+        metadata={
+            "help": "Decoder fully connected features",
+        },
     )
     decoder_residual_channels: list[int] = field(
         default_factory=lambda: [16, 256, 256],
+        metadata={
+            "help": "Decoder residual channels",
+        },
     )
     upsampling_channels: list[int] = field(
         default_factory=lambda: [256, 256, 3],
+        metadata={
+            "help": "Upsampling channels",
+        },
     )
 
 

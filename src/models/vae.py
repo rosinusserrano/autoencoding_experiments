@@ -1,6 +1,6 @@
 """Variational Autoencoder."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import pairwise
 
 import torch
@@ -20,7 +20,7 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 class VAEConfig(AutoencoderConfig):
     """Configuration for Variational Autoencoder."""
 
-    name: str = "VAE"
+    name: str = field(default="VAE", metadata={"fixed": True})
     kld_weight: float = 0.001
     n_augmentation: int = 1
 
@@ -176,6 +176,7 @@ def mse_and_kld_loss(
         "mse_loss": mse.item(),
         "total_loss": loss.item(),
     }
+
 
 def min_mse_and_kld_loss(
     model_outputs: tuple[torch.Tensor, ...],

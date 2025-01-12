@@ -23,10 +23,10 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 class TrainConfig:
     """Configuration for a autoencoder training pipeline."""
 
-    optimizer: Literal["adam", "sgd"]
-    learning_rate: float
-    n_epochs: int
-    weight_decay: float
+    optimizer: Literal["adam", "sgd"] = "adam"
+    learning_rate: float = 0.001
+    n_epochs: int = 10
+    weight_decay: float = 0.001
 
 
 def create_optimizer(
