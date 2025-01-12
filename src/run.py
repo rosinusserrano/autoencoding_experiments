@@ -1,31 +1,44 @@
 """Run script."""
 
+import mlflow
+
 from datasets import DatasetConfig
 from logger.caveman import CavemanLogger
-from models.autoencoder import AutoencoderConfig, run
-from utils.train import TrainConfig
+from logger.mlflow import MlFlowLogger
+from models.autoencoder import AutoencoderV2Config, mse_loss
+from models.vae import VAEConfig, mse_and_kld_loss
+from utils.train import TrainConfig, standard_training_pipeline
 
-model_config = AutoencoderConfig()
+model_config = AutoencoderV2Config()
 
 dataset_config = DatasetConfig(
-    dataset_name="cifar10",
-    batch_size=32,
+    root="/workspace/drive",
+    dataset_name="stl10",
     validation_split=0.1,
+    batch_size=32,
 )
-
 train_config = TrainConfig(
-    optimizer="adam",
-    learning_rate=0.001,
-    n_epochs=20,
+    "adam",
+    learning_rate=0.0005,
+    n_epochs=3,
+    weight_decay=0.0001,
 )
 
-logger = CavemanLogger(root_dir="testrun")
+experiment_name = "AutoencoderV2 on STL10"
 
-run(
+mlflow.end_run()
+logger = MlFlowLogger(
+    experiment_name=experiment_name,
+    remote_url="https://mlflow.sniggles.de",
+    debug=True,
+)
+
+standard_training_pipeline(
     model_config=model_config,
     dataset_config=dataset_config,
     train_config=train_config,
     logger=logger,
+    loss_fn=mse_loss,
     validation_interval=1,
     test_interval=1,
     visualization_interval=1,
